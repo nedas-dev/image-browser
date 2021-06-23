@@ -105,7 +105,7 @@ const ImageSearchApp = () => {
             let containerHeight = document.querySelector('.mainContainer').clientHeight
             const currentOffSetY = window.pageYOffset
 
-            if (containerHeight <= currentOffSetY + window.innerHeight + 30) {
+            if (containerHeight && containerHeight <= currentOffSetY + window.innerHeight + 30) {
                 if (!loading) {
                     setPage((prevState) => prevState + 1)
                 }

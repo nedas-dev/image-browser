@@ -44,10 +44,10 @@ const ImageSearchApp = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         setIsMore(true)
-        if (page === 1) {
-            loadImages()
-        }
         setPage(() => 1)
+        setImages([])
+        setLoading(true)
+        loadImages()
     }
 
     const loadImages = async () => {
@@ -97,24 +97,32 @@ const ImageSearchApp = () => {
 
     useEffect(() => {
         loadImages()
+        console.log(images.length)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page])
 
+    // Timer for loading more images after specific time (so you couldn't trigger setPage too many times too fast)
+    let stop = false
+    const restartTimerForLoadingImages = () => {
+        stop = true
+        setTimeout(() => stop = false, 500)
+    }
+
     useEffect(() => {
-        const setPageFunc = (e) => {
+        function setPageFunc() {
             let containerHeight = document.querySelector('.mainContainer').clientHeight
             const currentOffSetY = window.pageYOffset
-
-            if (containerHeight && containerHeight <= currentOffSetY + window.innerHeight + 30) {
-                if (!loading) {
-                    setPage((prevState) => prevState + 1)
-                }
+            if (!stop && containerHeight && containerHeight <= currentOffSetY + window.innerHeight + 30) {
+                setPage((prevPage) => {
+                    restartTimerForLoadingImages()
+                    return prevPage + 1
+                })
             }
         }
 
-        document.addEventListener('scroll', () => setPageFunc())
+        document.addEventListener('scroll', setPageFunc)
 
-        return document.removeEventListener('scroll', () => setPageFunc())
+        return () => document.removeEventListener('scroll', setPageFunc)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

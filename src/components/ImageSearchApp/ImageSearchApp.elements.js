@@ -5,7 +5,7 @@ export const SecondaryContainer = styled.div`
 margin: 0;
 padding: 0;
 box-sizing: border-box;
-background-color: #fff;
+background-color: ${(props) => props.bgColor};
 width: 100%;
 `
 
@@ -17,13 +17,16 @@ width: 95%;
 
 export const SearchInputForm = styled.form`
 margin-left: 1rem;
-padding-top: 3rem;
+margin-top: 3rem;
+padding: 5px;
+border-radius: 5px;
 width: 50%;
 min-width: 200px;
 border-bottom: 3px solid grey;
 padding-bottom: 0.2rem;
 display: flex;
 flex-direction: row;
+background-color: white;
 
 @media screen and (max-width: 550px){
     width: 85%;
@@ -44,7 +47,7 @@ color: grey;
 cursor: pointer;
 `
 
-export const ImagesContainer = styled.div`
+export const ImagesContainerDiv = styled.div`
 display: flex;
 flex-direction: row;
 flex-wrap: wrap;
@@ -126,4 +129,12 @@ export const HeartLogo = styled(FaHeart)`
 padding-left: 4px;
 font-size: 10px;
 color: #ff7e7e;
+`
+
+export const NavWrapper = styled.div`
+display: flex;
+justify-content: space-around;
+@media screen and (max-width: 550px){
+    flex-direction: column;
+}
 `

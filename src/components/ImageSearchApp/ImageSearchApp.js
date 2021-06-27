@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 
 import {
     SecondaryContainer,
@@ -6,20 +6,15 @@ import {
     SearchInputForm,
     SearchInput,
     SearchIcon,
-    ImagesContainer,
-    Image,
-    ImageWrapper,
-    InfoAboutImageDiv,
-    LeftSideWrapper,
-    UsernameDiv,
-    LikesDiv,
-    UserProfileImage,
-    RightSideWrapper,
-    HeartLogo
+    NavWrapper
 } from './ImageSearchApp.elements';
 
+import ThemesVisualSelector from '../ThemesContext/ThemesVisualSelector';
+import { ThemesContext } from '../ThemesContext/ThemesContext';
+
+import ImagesContainer from './components/ImagesContainer';
+
 import LoadingGif from '../../data/loading.gif';
-import NotFoundGif from '../../data/notfound.gif';
 
 const accessKey = 'uMhmlOS72hs-AtvM6nadBUVwQeTMUvr0x237_ffbpUA'
 const allContentUrl = `https://api.unsplash.com/photos`
@@ -59,11 +54,11 @@ const ImageSearchApp = () => {
         const query = `query=${searchInput}`
         const currentPage = `page=${page}`
         const clientId = `client_id=${accessKey}`
-
+        const perPage = 'per_page=10'
         if (searchInput) {
-            url = `${searchContentUrl}?${query}&${currentPage}&${clientId}`
+            url = `${searchContentUrl}?${query}&${currentPage}&${clientId}&${perPage}`
         } else {
-            url = `${allContentUrl}?${clientId}&${currentPage}`
+            url = `${allContentUrl}?${clientId}&${currentPage}&${perPage}`
         }
 
         try {
@@ -97,7 +92,6 @@ const ImageSearchApp = () => {
 
     useEffect(() => {
         loadImages()
-        console.log(images.length)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page])
 
@@ -126,35 +120,20 @@ const ImageSearchApp = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const { bgColor } = useContext(ThemesContext);
 
     return (
         <div>
-            <SecondaryContainer>
+            <SecondaryContainer bgColor={bgColor}>
                 <Container className='mainContainer'>
-                    <SearchInputForm onSubmit={handleSubmit}>
-                        <SearchInput name='search' value={searchInput} placeholder='Search' onChange={onChange} />
-                        <SearchIcon onClick={handleSubmit} />
-                    </SearchInputForm>
-                    <ImagesContainer>
-                        {!loading && images.length === 0
-                            ? <div style={{ textAlign: 'center', margin: 'auto' }}><img width='120px' alt='not found' src={NotFoundGif}></img></div>
-                            : images.map((image, index) => {
-                                return (
-                                    <ImageWrapper key={index}>
-                                        <Image alt={image.alt_description} src={image.urls.regular}></Image>
-                                        <InfoAboutImageDiv className='showInfo'>
-                                            <LeftSideWrapper>
-                                                <UsernameDiv>{image.user.name}</UsernameDiv>
-                                                <LikesDiv>{image.likes}<HeartLogo /></LikesDiv>
-                                            </LeftSideWrapper>
-                                            <RightSideWrapper>
-                                                <a href={image.user.portfolio_url}>
-                                                    <UserProfileImage alt='user profile' src={image.user.profile_image.medium}></UserProfileImage>
-                                                </a>
-                                            </RightSideWrapper>
-                                        </InfoAboutImageDiv>
-                                    </ImageWrapper>)
-                            })}
+                    <NavWrapper>
+                        <SearchInputForm onSubmit={handleSubmit}>
+                            <SearchInput name='search' value={searchInput} placeholder='Search' onChange={onChange} />
+                            <SearchIcon onClick={handleSubmit} />
+                        </SearchInputForm>
+                        <ThemesVisualSelector />
+                    </NavWrapper>
+                    <ImagesContainer loading={loading} images={images}>
                     </ImagesContainer>
                     {loading && <div style={{ textAlign: 'center', margin: 'auto' }}><img alt='loading' src={LoadingGif}></img></div>}
                 </Container>

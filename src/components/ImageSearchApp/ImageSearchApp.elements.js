@@ -7,6 +7,7 @@ padding: 0;
 box-sizing: border-box;
 background-color: ${(props) => props.bgColor};
 width: 100%;
+height: 100vh;
 `
 
 export const Container = styled.div`
